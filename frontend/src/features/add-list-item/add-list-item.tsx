@@ -1,17 +1,13 @@
-import { useAddListItemMutation } from "../list/listAPi.slicer";
 import { useState } from "react";
+import {useAppDispatch} from "../../app/hooks";
+import {postListItem} from "../list/list.slicer";
 
 export const AddListItem =() => {
+    const dispatch = useAppDispatch()
     const [todoListItem, setTodoListItem] = useState({ author: '', text: '' })
-    const [addListItem] = useAddListItemMutation()
+
     const onAddItem = function () {
-        addListItem({ text: todoListItem.text, author: todoListItem.author, done: false })
-            .then(() => {
-                console.log('success')
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+        dispatch(postListItem({ text: todoListItem.text, author: todoListItem.author, done: false }))
     }
 
     const handleInputData = (key: string, value: string) => {
