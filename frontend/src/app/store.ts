@@ -2,10 +2,28 @@ import type { Action, ThunkAction } from "@reduxjs/toolkit"
 import { combineSlices, configureStore } from "@reduxjs/toolkit"
 import { setupListeners } from "@reduxjs/toolkit/query"
 import { listSlice } from "../features/list/list.slicer";
+import { createAppSlice } from "./createAppSlice";
+
+const appSlice = createAppSlice({
+  name: 'app',
+  initialState: { port: '1337' },
+  reducers: {
+    setPort: (state, action) => {
+      state.port = action.payload
+    },
+  },
+  selectors: {
+    selectPort: (state) => state.port,
+  }
+})
+
+export const { setPort } = appSlice.actions;
+export const { selectPort } = appSlice.selectors;
+
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
-const rootReducer = combineSlices(listSlice)
+const rootReducer = combineSlices(appSlice, listSlice)
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>
 

@@ -1,5 +1,7 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { createAppSlice } from "../../app/createAppSlice"
+import { OverridableStringUnion } from "@mui/types";
+import { AlertColor, AlertPropsColorOverrides } from "@mui/material/Alert/Alert";
 
 interface List {
     author: string
@@ -7,22 +9,29 @@ interface List {
     done: boolean
 }
 
-export interface listState {
-    list: List[]
+export interface Message {
+    show: boolean,
+    type: OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined
+    message: string | undefined,
 }
 
-const initialState = { list: [] } satisfies listState as listState
+export interface listState {
+    list: List[]
+    apiResponseMessage: Message | null
+}
 
-export const getAllListItems = createAsyncThunk( 'todolist/fetch', async (thunkApi) => {
-    const response = await fetch('http://localhost:1337/todo', {
+const initialState = { list: [], apiResponseMessage: null } satisfies listState as listState
+
+export const getAllListItems = createAsyncThunk( 'todolist/fetch', async (port: string, thunkApi) => {
+    const response = await fetch(`http://localhost:${port}/todo`, {
         method: 'GET',
         mode: 'cors'
     })
     return response.json()
 })
 
-export const postListItem = createAsyncThunk('todoList/post', async (list: List, thunkApi) => {
-    const response = await fetch('http://localhost:1337/todo', {
+export const postListItem = createAsyncThunk('todoList/post', async ({ port, list }: { port: string, list: List },  thunkApi) => {
+    const response = await fetch(`http://localhost:${port}/todo`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -50,11 +59,15 @@ export const listSlice = createAppSlice({
         },
         removeItem(state, action: PayloadAction<{index: number}>) {
             state.list = state.list.splice(action.payload.index, 1)
+        },
+        hideApiMessageNotification: (state) => {
+            state.apiResponseMessage = { show: false, message: '', type: undefined }
         }
     },
     selectors: {
         selectListItem: (state, index: number) => state.list[index],
         selectList: (state) => state.list,
+        selectApiMessage: (state) => state.apiResponseMessage
     },
     extraReducers: (builder) => {
         builder.addCase(getAllListItems.fulfilled, (state, action) => {
@@ -62,11 +75,15 @@ export const listSlice = createAppSlice({
         })
         builder.addCase(postListItem.fulfilled, (state, action) => {
             state.list.push(action.payload)
+            state.apiResponseMessage = { show: true, message: 'Erfolgreich hinzugefügt', type: 'success' }
+        })
+        builder.addCase(postListItem.rejected, (state, action) => {
+            state.apiResponseMessage = { show: true, type: 'error', message: action?.error?.message?.toString() }
         })
     }
 })
 
-export const { init, toggleDone, addItem, removeItem } = listSlice.actions;
-export const { selectListItem, selectList } = listSlice.selectors;
+export const { init, toggleDone, addItem, removeItem, hideApiMessageNotification } = listSlice.actions;
+export const { selectListItem, selectList, selectApiMessage } = listSlice.selectors;
 
 export default listSlice.reducer
