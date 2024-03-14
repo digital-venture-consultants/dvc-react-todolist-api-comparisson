@@ -4,16 +4,20 @@ import { Provider } from "react-redux"
 import App from "./App"
 import { store } from "./app/store"
 import "./index.css"
+import { createTheme, ThemeProvider } from "@mui/material";
 
 const container = document.getElementById("root")
 
+const defaultTheme = createTheme();
 if (container) {
   const root = createRoot(container)
 
   root.render(
     <React.StrictMode>
       <Provider store={store}>
-        <App />
+          <ThemeProvider theme={defaultTheme}>
+            <App />
+          </ThemeProvider>
       </Provider>
     </React.StrictMode>,
   )
