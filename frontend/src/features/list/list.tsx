@@ -23,8 +23,11 @@ export const ToDoList = () => {
         dispatch(toggleDone({ index }))
     }
 
+    const reducedData = data?.list.slice(0, 100) || []
+
     return (
         <Box sx={{ flexGrow: 1, padding: 2 }}>
+            <h3>Total Row Count: {data?.list?.length} by: {port === '1337' ? 'GoLang' : 'NodeJs'}</h3>
             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={8}>
                     <TableContainer component={Paper}>
@@ -36,7 +39,7 @@ export const ToDoList = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {data?.list?.map((listItem, index) => (
+                                {reducedData.map((listItem, index) => (
                                     <TableRow  key={index}  sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                                         <TableCell component="th" scope="row">{listItem.author}</TableCell>
                                         <TableCell>{listItem.text}</TableCell>

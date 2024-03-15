@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { postListItem } from "../list/list.slicer";
+import { postListItem, postListItems } from "../list/list.slicer";
 import { selectPort } from "../../app/store";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -28,6 +28,9 @@ export const AddListItem =() => {
     const onAddItem = function () {
         dispatch(postListItem({ port, list: { text: todoListItem.text, author: todoListItem.author, done: false }}))
     }
+    const onAddMultiItems = function () {
+        dispatch(postListItems({ port, list: { text: todoListItem.text, author: todoListItem.author, done: false }}))
+    }
 
     const handleInputData = (key: string, value: string) => {
         setTodoListItem((prevState) => {
@@ -49,9 +52,14 @@ export const AddListItem =() => {
                 <Grid item xs={4}>
                     <TextField sx={{ width: '100%' }} id="Text-basic" label="Text" variant="standard" value={todoListItem.text} onChange={ event => handleInputData( 'text', event.target.value)} />
                 </Grid>
-                <Grid item xs={4} alignItems="end">
+                <Grid item xs={2} alignItems="end">
                     <Box sx={{ display: 'flex', height: '100%', alignItems: 'end' }}>
                         <Button variant="contained" color="success" onClick={onAddItem.bind(this)}>Submit</Button>
+                    </Box>
+                </Grid>
+                <Grid item xs={2} alignItems="end">
+                    <Box sx={{ display: 'flex', height: '100%', alignItems: 'end' }}>
+                        <Button variant="contained" color="success" onClick={onAddMultiItems.bind(this)}>Submit 5000x</Button>
                     </Box>
                 </Grid>
             </Grid>

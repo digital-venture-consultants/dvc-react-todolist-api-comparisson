@@ -44,6 +44,27 @@ export const postListItem = createAsyncThunk('todoList/post', async ({ port, lis
     return await response.json();
 })
 
+export const postListItems = createAsyncThunk('todoLists/post', async ({ port, list }: { port: string, list: List },  thunkApi) => {
+    const items: Promise<any>[] = []
+    for (let i = 0; i < 5000; i++) {
+        const f = fetch(`http://localhost:${port}/todo`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors',
+            body: JSON.stringify(list)
+        })
+        items.push(f)
+    }
+    console.time('Request')
+    const response: any = await Promise.all(items)
+    console.timeEnd('Request')
+    return {
+        payload: response.length
+    }
+})
+
 export const listSlice = createAppSlice({
     name: 'list',
     initialState,
@@ -78,6 +99,13 @@ export const listSlice = createAppSlice({
             state.apiResponseMessage = { show: true, message: 'Erfolgreich hinzugefügt', type: 'success' }
         })
         builder.addCase(postListItem.rejected, (state, action) => {
+            state.apiResponseMessage = { show: true, type: 'error', message: action?.error?.message?.toString() }
+        })
+        builder.addCase(postListItems.fulfilled, (state, action) => {
+            state.apiResponseMessage = { show: true, message: 'Erfolgreich hinzugefügt', type: 'success' }
+        })
+        builder.addCase(postListItems.rejected, (state, action) => {
+            console.log(action)
             state.apiResponseMessage = { show: true, type: 'error', message: action?.error?.message?.toString() }
         })
     }
