@@ -5,19 +5,8 @@ import { postListItem, postListItems } from "../list/list.slicer";
 import { selectPort } from "../../app/store";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    padding: theme.spacing(1),
-    textAlign: 'start',
-    alignItems: 'center',
-    height: 46,
-    color: theme.palette.text.secondary,
-}));
 
 export const AddListItem =() => {
 
@@ -40,8 +29,6 @@ export const AddListItem =() => {
             }
         })
     }
-
-    const updateText = () => {}
 
     return (
         <Box sx={{ flexGrow: 1, padding: 2 }}>

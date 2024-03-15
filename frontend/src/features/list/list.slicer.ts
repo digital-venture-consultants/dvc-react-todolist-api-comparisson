@@ -22,7 +22,7 @@ export interface listState {
 
 const initialState = { list: [], apiResponseMessage: null } satisfies listState as listState
 
-export const getAllListItems = createAsyncThunk( 'todolist/fetch', async (port: string, thunkApi) => {
+export const getAllListItems = createAsyncThunk( 'todolist/fetch', async (port: string) => {
     const response = await fetch(`http://localhost:${port}/todo`, {
         method: 'GET',
         mode: 'cors'
@@ -30,7 +30,7 @@ export const getAllListItems = createAsyncThunk( 'todolist/fetch', async (port: 
     return response.json()
 })
 
-export const postListItem = createAsyncThunk('todoList/post', async ({ port, list }: { port: string, list: List },  thunkApi) => {
+export const postListItem = createAsyncThunk('todoList/post', async ({ port, list }: { port: string, list: List }) => {
     const response = await fetch(`http://localhost:${port}/todo`, {
         method: 'POST',
         headers: {
@@ -44,7 +44,7 @@ export const postListItem = createAsyncThunk('todoList/post', async ({ port, lis
     return await response.json();
 })
 
-export const postListItems = createAsyncThunk('todoLists/post', async ({ port, list }: { port: string, list: List },  thunkApi) => {
+export const postListItems = createAsyncThunk('todoLists/post', async ({ port, list }: { port: string, list: List }) => {
     const items: Promise<any>[] = []
     for (let i = 0; i < 5000; i++) {
         const f = fetch(`http://localhost:${port}/todo`, {
@@ -101,7 +101,7 @@ export const listSlice = createAppSlice({
         builder.addCase(postListItem.rejected, (state, action) => {
             state.apiResponseMessage = { show: true, type: 'error', message: action?.error?.message?.toString() }
         })
-        builder.addCase(postListItems.fulfilled, (state, action) => {
+        builder.addCase(postListItems.fulfilled, (state) => {
             state.apiResponseMessage = { show: true, message: 'Erfolgreich hinzugefügt', type: 'success' }
         })
         builder.addCase(postListItems.rejected, (state, action) => {

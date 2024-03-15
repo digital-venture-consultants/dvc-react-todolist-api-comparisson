@@ -19,9 +19,6 @@ export const ToDoList = () => {
         dispatch(getAllListItems(port))
     }, [port]);
     const data: listState = useAppSelector((state) => state.list) as listState
-    const toggleItemDone = (index: number) => {
-        dispatch(toggleDone({ index }))
-    }
 
     const reducedData = data?.list.slice(0, 100) || []
 
