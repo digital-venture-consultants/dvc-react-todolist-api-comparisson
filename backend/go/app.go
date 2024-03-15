@@ -3,7 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
+	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 type List struct {
@@ -13,56 +14,88 @@ type List struct {
 	Done   bool   `json:"done"`
 }
 
+type RemoveRequest struct {
+	Id int `json:"id"`
+}
+
 var lists []List
 var id = 1
 
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
-	(*w).Header().Set("Content-Type", "text/html; charset=utf-8")
-	(*w).Header().Set("Access-Control-Allow-Headers", "Content-Type,access-control-allow-origin, access-control-allow-headers")
-}
-
-func addListItem(w http.ResponseWriter, r *http.Request) {
-	var listItem List
-	err := json.NewDecoder(r.Body).Decode(&listItem)
+func addListItem(context *gin.Context) {
+	var list List
+	decoder := json.NewDecoder(context.Request.Body)
+	err := decoder.Decode(&list)
 	if err != nil {
-		return
+		fmt.Printf("error %s", err)
+		context.JSON(501, gin.H{"error": err})
 	}
-	listItem.Id = id
+
+	list.Id = id
 	id = id + 1
-	lists = append(lists, listItem)
+	lists = append(lists, list)
 
-	listJson, _ := json.Marshal(listItem)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
-	w.Write(listJson)
+	context.JSON(200, list)
 }
 
-func getList(w http.ResponseWriter, r *http.Request) {
-	listJson, _ := json.Marshal(lists)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
-	w.Write(listJson)
+func RemoveIndex(s []List, index int) []List {
+	return append(s[:index], s[index+1:]...)
 }
 
-func todoList(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+func removeListItem(context *gin.Context) {
+	id := context.Param("Id")
+	// string to int
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		// ... handle error
+		panic(err)
+	}
+	lists = RemoveIndex(lists, i)
+	context.JSON(200, lists)
+}
 
-	switch r.Method {
-	case "GET":
-		getList(w, r)
-		break
-	case "POST":
-		addListItem(w, r)
-		break
-	default:
-		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+func resetList(context *gin.Context) {
+	lists = make([]List, 0)
+	context.JSON(200, lists)
+}
+
+func getList(context *gin.Context) {
+	context.JSON(200, lists)
+}
+
+func todoList(rg *gin.RouterGroup) {
+	rg.GET("", getList)
+	rg.POST("", addListItem)
+	rg.DELETE("", resetList)
+	rg.DELETE(":Id", removeListItem)
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Header("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT, DELETE")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
 	}
 }
 
 func main() {
-	http.HandleFunc("/todo", todoList)
+	server := gin.Default()
+	server.Use(CORSMiddleware())
+	toDo := server.Group("/todo")
+	todoList(toDo)
 
-	err := http.ListenAndServe(":1337", nil)
-	fmt.Print(err)
+	err := server.Run(":1337")
+	if err != nil {
+		panic("[Error] failed to start Gin server due to: " + err.Error())
+		return
+	}
+
 }

@@ -1,0 +1,1 @@
+docker build -t benjidvc/nodejs-image-demo .

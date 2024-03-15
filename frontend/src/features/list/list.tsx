@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import {getAllListItems, listState } from "./list.slicer";
+import { deleteAllItem, deleteItem, getAllListItems, listState } from "./list.slicer";
 import { useEffect } from "react";
 import {selectPort} from "../../app/store";
 import Table from '@mui/material/Table';
@@ -11,6 +11,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export const ToDoList = () => {
     const dispatch = useAppDispatch()
@@ -33,13 +35,29 @@ export const ToDoList = () => {
                                 <TableRow>
                                     <TableCell>Author</TableCell>
                                     <TableCell>Text</TableCell>
+                                    <TableCell align='right'>
+                                        Actions
+                                        <IconButton aria-label="delete" size="small" onClick={() => dispatch(deleteAllItem(port))}>
+                                            <DeleteIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {reducedData.map((listItem, index) => (
                                     <TableRow  key={index}  sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                                         <TableCell component="th" scope="row">{listItem.author}</TableCell>
-                                        <TableCell>{listItem.text}</TableCell>
+                                        <TableCell>
+                                            {listItem.text}
+                                        </TableCell>
+                                        <TableCell align='right'>
+                                            <IconButton aria-label="delete" size="small" onClick={() => dispatch(deleteItem({
+                                                port,
+                                                index
+                                            }))}>
+                                                <DeleteIcon fontSize="inherit" />
+                                            </IconButton>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

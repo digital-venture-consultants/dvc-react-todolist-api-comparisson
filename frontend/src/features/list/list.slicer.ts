@@ -65,6 +65,23 @@ export const postListItems = createAsyncThunk('todoLists/post', async ({ port, l
     }
 })
 
+export const deleteAllItem = createAsyncThunk( 'todolist/drop', async (port: string) => {
+    const response = await fetch(`http://localhost:${port}/todo`, {
+        method: 'DELETE',
+        mode: 'cors'
+    })
+    return response.json()
+})
+
+export const deleteItem = createAsyncThunk( 'todolist/delete', async ({ port, index }: { port: string, index: number }) => {
+    const response = await fetch(`http://localhost:${port}/todo/${index}`, {
+        method: 'DELETE',
+        mode: 'cors'
+    })
+    return response.json()
+})
+
+
 export const listSlice = createAppSlice({
     name: 'list',
     initialState,
@@ -105,7 +122,20 @@ export const listSlice = createAppSlice({
             state.apiResponseMessage = { show: true, message: 'Erfolgreich hinzugefügt', type: 'success' }
         })
         builder.addCase(postListItems.rejected, (state, action) => {
-            console.log(action)
+            state.apiResponseMessage = { show: true, type: 'error', message: action?.error?.message?.toString() }
+        })
+        builder.addCase(deleteAllItem.fulfilled, (state, action) => {
+            state.list = action.payload || []
+            state.apiResponseMessage = { show: true, message: 'Erfolgreich Alle Items gelöscht', type: 'success' }
+        })
+        builder.addCase(deleteAllItem.rejected, (state) => {
+            state.apiResponseMessage = { show: true, message: 'Alle Items konnten nicht gelöscht werden', type: 'error' }
+        })
+        builder.addCase(deleteItem.fulfilled, (state, action) => {
+            state.list = action.payload || state.list
+            state.apiResponseMessage = { show: true, message: 'Erfolgreich gelöscht', type: 'success' }
+        })
+        builder.addCase(deleteItem.rejected, (state, action) => {
             state.apiResponseMessage = { show: true, type: 'error', message: action?.error?.message?.toString() }
         })
     }

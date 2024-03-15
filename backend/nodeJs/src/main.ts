@@ -17,7 +17,7 @@ interface toDoList {
     done: boolean
 }
 
-const todoList: toDoList[] = [];
+let todoList: toDoList[] = [];
 
 app.use(cors())
 
@@ -41,6 +41,20 @@ app.post('/todo', (req: Request, res: Response) => {
     todoList.push(req.body)
     res.json(req.body);
 });
+
+app.delete('/todo', (req: Request, res: Response) => {
+    todoList = []
+    res.status(200).send(todoList);
+})
+
+app.delete('/todo/:id', (req: Request, res: Response) => {
+    const index = +req.params.id
+    if (index < 0 && index > todoList.length) {
+        res.status(400).send('Invalid Id');
+    }
+    todoList.splice(index, 1)
+    res.status(200).send(todoList);
+})
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
