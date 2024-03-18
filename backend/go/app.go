@@ -59,6 +59,10 @@ func resetList(context *gin.Context) {
 }
 
 func getList(context *gin.Context) {
+	var sum int
+	for i := 0; i < 10e4; i++ {
+		sum = i + sum
+	}
 	context.JSON(200, lists)
 }
 

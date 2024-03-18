@@ -26,6 +26,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/todo', (req, res) => {
+    let sum  = 0
+    for (let i = 0; i < 10e4; i++) {
+        sum = i + sum
+    }
     res.json(todoList);
 });
 
