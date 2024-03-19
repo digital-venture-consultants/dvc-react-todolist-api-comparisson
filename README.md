@@ -42,6 +42,13 @@ Auswertung von Docker
 
 Auswertung vom [Loadtest Package](https://www.npmjs.com/package/loadtest) ab Max time in seconds
 
+- c = max duration
+- rps = request per second
+
+```shell
+loadtest -c 10 --rps 2000 http://localhost:1337/todo
+```
+
 Legende:
 - Rps: *Request Per Seconds*
 - Concurrent clients: *Concurrent Clients means the number of client hosts which are able to use the Software functionalities at the same time*
@@ -66,6 +73,10 @@ Mögliche Fehlerquellen:
 - Nicht optimierter Code
 
 ### Testing mit [k6](https://k6.io/docs/)
+
+```shell
+k6 ./test-go.js
+```
 
 Legende:
 - vus: *virtual users = more is better*
