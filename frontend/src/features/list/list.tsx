@@ -23,10 +23,22 @@ export const ToDoList = () => {
     const data: listState = useAppSelector((state) => state.list) as listState
 
     const reducedData = data?.list.slice(0, 100) || []
+    let serverName = ''
+    switch (port) {
+        case "1337":
+            serverName = 'Golang';
+            break;
+        case "3000":
+            serverName = 'NodeJs';
+            break;
+        case "8080":
+            serverName = 'Java Springboot';
+            break
+    }
 
     return (
         <Box sx={{ flexGrow: 1, padding: 2 }}>
-            <h3>Total Row Count: {data?.list?.length} by: {port === '1337' ? 'GoLang' : 'NodeJs'}</h3>
+            <h3>Total Row Count: {data?.list?.length} by: {serverName}</h3>
             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={8}>
                     <TableContainer component={Paper}>

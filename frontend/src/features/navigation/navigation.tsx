@@ -24,7 +24,7 @@ function Navigation() {
     const DrawerList = (
         <Box sx={{ width: drawerWidth }} role="presentation">
             <List>
-                {['1337', '3000'].map((text, index) => (
+                {['1337', '3000', '8080'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton selected={selectedPort === text} onClick={() => setApi(text)}>
                             <ListItemIcon>
