@@ -25,11 +25,14 @@ app.get('/', (req, res) => {
     res.redirect('/todo');
 });
 
-app.get('/todo', (req, res) => {
-    let sum  = 0
-    for (let i = 0; i < 10e4; i++) {
-        sum = i + sum
-    }
+function sleep(ms: number) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
+app.get('/todo', async (req, res) => {
+    await sleep(500)
     res.json(todoList);
 });
 

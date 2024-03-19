@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"time"
 )
 
 type List struct {
@@ -59,18 +60,16 @@ func resetList(context *gin.Context) {
 }
 
 func getList(context *gin.Context) {
-	var sum int
-	for i := 0; i < 10e4; i++ {
-		sum = i + sum
-	}
 	context.JSON(200, lists)
 }
 
 func todoList(rg *gin.RouterGroup) {
-	rg.GET("", getList)
 	rg.POST("", addListItem)
 	rg.DELETE("", resetList)
 	rg.DELETE(":Id", removeListItem)
+
+	time.Sleep(500 * time.Millisecond)
+	rg.GET("", getList)
 }
 
 func CORSMiddleware() gin.HandlerFunc {

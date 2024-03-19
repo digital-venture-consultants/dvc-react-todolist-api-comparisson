@@ -22,7 +22,7 @@ export default function() {
     "status is 200": (r) => r.status === 200,
   });
 
-  res = http.get("http://localhost:3000/todo");
+  res = http.get("http://localhost:1337/todo");
 
   check(res, {
     "status is 200": (r) => r.status === 200,
