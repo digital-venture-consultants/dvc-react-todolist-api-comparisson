@@ -42,6 +42,10 @@ Auswertung von Docker
 
 Auswertung vom [Loadtest Package](https://www.npmjs.com/package/loadtest) ab Max time in seconds
 
+Legende:
+- Rps: *Request Per Seconds*
+- Concurrent clients: *Concurrent Clients means the number of client hosts which are able to use the Software functionalities at the same time*
+
 | Unter last          | NodeJs   | GoLang   |
 |---------------------|----------|----------|
 | Arbeitsspeicher     | 366.9 MB | 20.16 MB |
@@ -52,7 +56,7 @@ Auswertung vom [Loadtest Package](https://www.npmjs.com/package/loadtest) ab Max
 | Running on cores    | 6        | 6        |
 | Completed requests  | 4417     | 19619    |
 | Total errors        | 0        | 111      |
-| Total time          | 10.691 s | 10.011   |
+| Total time          | 10.691 s | 10.011 s |
 | Mean latency        | 903.4 ms | 36.5 ms  |
 | Effective rps       | 413      | 1960     |
 
@@ -61,14 +65,17 @@ Mögliche Fehlerquellen:
 - [Loadtest](https://www.npmjs.com/package/loadtest) ein NPM Package das auf nodeJs aufbaut.
 - Nicht optimierter Code
 
-Testing mit [k6](https://k6.io/docs/)
+### Testing mit [k6](https://k6.io/docs/)
 
-| Test                | NodeJs   | Golang  |
-|---------------------|----------|---------|
-| Arbeitsspeicher     | 174.2 MB | 38.12MB |
-| CPU Usage           | 132.81%  | 11.26%  |
+Legende:
+- vus: *virtual users = more is better*
 
-Go API k6 Auswertung
+| Test                | NodeJs   | Golang   |
+|---------------------|----------|----------|
+| Arbeitsspeicher     | 174.2 MB | 38.12 MB |
+| CPU Usage           | 132.81%  | 11.26%   |
+
+#### Go API k6 Auswertung
 
      scenarios: (100.00%) 1 scenario, 500 max VUs, 1m30s max duration (incl. graceful stop):
               * default: Up to 500 looping VUs for 1m0s over 2 stages (gracefulRampDown: 30s, gracefulStop: 30s)
@@ -96,9 +103,9 @@ Go API k6 Auswertung
 
 
 running (1m01.0s), 000/500 VUs, 22662 complete and 0 interrupted iterations
-default ✓ [======================================] 000/500 VUs  1m0s
+default ✓ 000/500 VUs  1m0s
 ---
-NodeJs API
+#### NodeJs API Auswertung
 
      scenarios: (100.00%) 1 scenario, 500 max VUs, 1m30s max duration (incl. graceful stop):
               * default: Up to 500 looping VUs for 1m0s over 2 stages (gracefulRampDown: 30s, gracefulStop: 30s)
@@ -126,7 +133,7 @@ NodeJs API
 
 
 running (1m01.6s), 000/500 VUs, 20032 complete and 0 interrupted iterations
-default ✓ [======================================] 000/500 VUs  1m0s
+default ✓ 000/500 VUs  1m0s
 
 ---
 
